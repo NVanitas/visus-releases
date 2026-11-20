@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Convite do Visus</title>
+<style>
+  :root { --bg:#f2f2f7; --card:#ffffff; --text:#000000; --dim:#6c6c70; --accent:#af52de; --fill:#7878801f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#000000; --card:#1c1c1e; --text:#ffffff; --dim:#98989f; --accent:#bf5af2; --fill:#7878803d; } }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; background:var(--bg); color:var(--text);
+         font:16px/1.45 "Segoe UI Variable Text","Segoe UI",system-ui,sans-serif; }
+  main { width:100%; max-width:440px; background:var(--card); border-radius:18px; padding:32px 28px; text-align:center;
+         box-shadow:0 8px 24px #0000000f; }
+  .logo { width:72px; height:72px; margin:0 auto 18px; border-radius:18px; background:linear-gradient(135deg,#bf5af2,#5e3cd6);
+          display:grid; place-items:center; }
+  h1 { font-size:26px; margin:0 0 6px; letter-spacing:-.5px; }
+  p { margin:0 0 18px; color:var(--dim); }
+  .btn { display:inline-block; padding:12px 26px; border-radius:999px; background:var(--accent); color:#fff; font-weight:600;
+         text-decoration:none; }
+  .btn.alt { background:var(--fill); color:var(--accent); }
+  .row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  code { display:block; margin:18px 0 0; padding:10px 12px; border-radius:10px; background:var(--fill); font:12px "Cascadia Mono",Consolas,monospace;
+         word-break:break-all; color:var(--dim); }
+  small { display:block; margin-top:18px; color:var(--dim); font-size:12.5px; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="#fff" stroke-width="3.3" stroke-linecap="round">
+      <path d="M31 9.5A15 15 0 1 1 13 9.5"/><circle cx="22" cy="22" r="3.7" fill="#fff" stroke="none"/>
+    </svg>
+  </div>
+
+  <section id="ok" hidden>
+    <h1 data-t="title">Convite do Visus</h1>
+    <p data-t="opening">Abrindo o Visus para você entrar na transmissão…</p>
+    <div class="row">
+      <a id="open" class="btn" href="#" data-t="open">Abrir no Visus</a>
+      <a class="btn alt" href="https://github.com/NVanitas/visus-releases/releases/latest" data-t="get">Baixar o Visus</a>
+    </div>
+    <small data-t="hint">Se o Visus pedir permissão para abrir, aceite. Ainda não tem o Visus? Baixe, instale e clique em “Abrir no Visus” de novo.</small>
+    <code id="raw"></code>
+  </section>
+
+  <section id="bad" hidden>
+    <h1 data-t="badTitle">Convite inválido</h1>
+    <p data-t="badText">Este link está incompleto. Peça para quem transmite copiar o link de novo.</p>
+    <a class="btn alt" href="https://github.com/NVanitas/visus-releases/releases/latest" data-t="get">Baixar o Visus</a>
+  </section>
+</main>
+<script>
+(function () {
+  var pt = { title:"Convite do Visus", opening:"Abrindo o Visus para você entrar na transmissão…", open:"Abrir no Visus", get:"Baixar o Visus",
+             hint:"Se o Visus pedir permissão para abrir, aceite. Ainda não tem o Visus? Baixe, instale e clique em “Abrir no Visus” de novo.",
+             badTitle:"Convite inválido", badText:"Este link está incompleto. Peça para quem transmite copiar o link de novo." };
+  var en = { title:"Visus invite", opening:"Opening Visus so you can join the stream…", open:"Open in Visus", get:"Get Visus",
+             hint:"If Visus asks for permission to open, accept. Don't have Visus yet? Download it, install it and click “Open in Visus” again.",
+             badTitle:"Invalid invite", badText:"This link is incomplete. Ask whoever is streaming to copy the link again." };
+  var lang = (navigator.language || "pt").toLowerCase().indexOf("pt") === 0 ? pt : en;
+  document.documentElement.lang = lang === pt ? "pt" : "en";
+  document.title = lang.title;
+  document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = lang[el.getAttribute("data-t")]; });
+  // O convite fica depois do # (o navegador não envia essa parte para nenhum servidor).
+  var h = location.hash.slice(1).toUpperCase();
+  if (/^[A-Z2-7]{52}\/[A-Z2-7]{13}$/.test(h)) {
+    var link = "visus://" + h;
+    document.getElementById("open").href = link;
+    document.getElementById("raw").textContent = link;
+    document.getElementById("ok").hidden = false;
+    setTimeout(function () { location.href = link; }, 400);
+  } else {
+    document.getElementById("bad").hidden = false;
+  }
+})();
+</script>
+</body>
+</html>
